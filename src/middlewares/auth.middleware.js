@@ -5,7 +5,7 @@ const userUsecase = require('../usecases/users.usecase')
 
 async function auth(request, response, next) {
     try {
-        const token = request.headesrs.authorization
+        const token = request.headers.authorization
         if(!token){
             throw createError(401, 'JWT is required')
         }
@@ -14,6 +14,7 @@ async function auth(request, response, next) {
         const user = await userUsecase.getById(payload.id)
 
         request.user = user
+        console.log(user)
         next()
     } catch (error) {
         response.status(401)
