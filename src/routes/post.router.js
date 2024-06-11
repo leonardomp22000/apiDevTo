@@ -6,7 +6,10 @@ const createError = require("http-errors")
 
 router.post('/', auth, async (request, response) =>{
     try {
-        const postCreated = await postUsecases.create(request.body)
+        const postData ={
+            ...request.body, user:request.user._id
+        }
+        const postCreated = await postUsecases.create(postData)
         response.json({
             success:true,
             data:{
@@ -18,6 +21,7 @@ router.post('/', auth, async (request, response) =>{
         response.status(error.status || 500)
         response.json({
             success: false, 
+            error: error.message
 
         })
         
@@ -26,18 +30,20 @@ router.post('/', auth, async (request, response) =>{
 
 router.get('/', async(request, response) => {
     try {
-        const allPost = await postUsecases.getAll()
+        console.log(request.query.title)
+        const posts = await postUsecases.getAll(request.query.title)
         response.json({
             suceess:true, 
             data:{
-                allPost
+                posts
             }
         })
         
     } catch (error) {
         response.status(error.status || 500), 
         response.json({
-            sucess: false
+            sucess: false,
+            error:error.message
         })
         
     }
@@ -45,8 +51,14 @@ router.get('/', async(request, response) => {
 
 router.delete('/:id', auth, async(request, response) => {
     try {
+        const idLoggedIn = request.user._id.toString()
         const { id } = request.params
-        const postDeleted = await postUsecases.deleted(id)
+        console.log(idLoggedIn)
+        console.log(id)
+        console.log(typeof(id))
+        console.log(typeof(idLoggedIn))
+        const postDeleted = await postUsecases.deleted(idLoggedIn, id)
+        console.log(postDeleted)
         response.json({
             success:true,
             data: {
@@ -57,6 +69,7 @@ router.delete('/:id', auth, async(request, response) => {
         response.status(error.status || 500)
         response.json({
             success:false,
+            error:error.message
             
         })
     }
@@ -76,7 +89,8 @@ router.patch('/:id', auth, async(request, response) =>{
     } catch (error) {
         response.status(error.status || 500)
         response.json({
-            success:false
+            success:false,
+            error:error.message
         })
         
     }

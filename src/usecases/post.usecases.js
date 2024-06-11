@@ -2,17 +2,35 @@ const Post = require("../models/post.model")
 const createError = require("http-errors")
 
 async function create(postData) {
-    const postCreated = await Post.create(postData)
-    return postCreated
+    return await Post.create(postData)
+  
 }
 
-async function getAll() {
-    const allPost = await Post.find().populate("user")
-    return allPost
+async function getAll(search) {
+    if(!search){
+        const allPost = await Post.find().populate("user")
+        return allPost
+    }
+    const post = await Post.find({title: { $regex: search, $options: 'i'}})
+    if(post.length == 0){
+        throw createError(404, 'No post found')
+    }
+    return post
+    
 }
 
-async function deleted(id) {
-    const postDeleted= await Post.findByIdAndDelete(id)
+async function deleted(idLoggedIn, idSearched) {
+    const post  = await Post.findById(idSearched)
+    if(!post){
+        throw createError(404, 'Post not found')
+    }
+
+
+    if(post.user.toString() === idLoggedIn){
+         throw createError(403, 'No eres el dueño')
+
+    }
+    const postDeleted= await Post.findByIdAndDelete(idSearched)
     return postDeleted
 }
 
