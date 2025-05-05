@@ -11,19 +11,19 @@ const schema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  email:{
+  email: {
     type: String,
-    required:true,
-    match:  /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/
+    required: true,
+    match: /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/,
   },
-  password:{
-    type: String, 
-    required: true, 
+  password: {
+    type: String,
+    required: true,
   },
   createdAt: {
     type: Date,
-    default: Date.now()
-  }
+    default: Date.now(),
+  },
 });
 
-module.exports = mongoose.model('user',schema)
+module.exports = mongoose.model("user", schema);
