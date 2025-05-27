@@ -48,12 +48,7 @@ router.delete("/:id", auth, async (request, response) => {
   try {
     const idLoggedIn = request.user._id;
     const { id } = request.params;
-    console.log(idLoggedIn);
-    console.log(id);
-    console.log(typeof id);
-    console.log(typeof idLoggedIn);
     const postDeleted = await postUsecases.deleted(idLoggedIn, id);
-    console.log(postDeleted);
     response.json({
       success: true,
       data: {
