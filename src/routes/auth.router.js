@@ -20,4 +20,18 @@ router.post("/login", async (request, response) => {
   }
 });
 
+router.post("/verifyUser", async (request, response) => {
+  try {
+    const { postID, userLogged } = request.body;
+    await authUsecase.verifyUser(postID, userLogged);
+    response.json({ success: true });
+  } catch (error) {
+    response.status(error.status || 500);
+    response.json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
 module.exports = router;
